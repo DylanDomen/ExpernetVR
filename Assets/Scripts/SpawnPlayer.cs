@@ -16,6 +16,8 @@ public class SpawnPlayer : MonoBehaviourPunCallbacks
         // à faire vérifier que le player est pas null
         Vector3 randomSpawnPosition = new Vector3(Random.Range(-3, 3), 0, Random.Range(-10, -5));
         PhotonNetwork.Instantiate(player.name, randomSpawnPosition, Quaternion.identity);
+        PhotonNetwork.NickName = "Player " + player.GetComponent<PhotonView>().ViewID;
+        player.GetComponentInChildren<Canvas>().GetComponentInChildren<TextMesh>().text = PhotonNetwork.NickName;
     }
 
     // Update is called once per frame
