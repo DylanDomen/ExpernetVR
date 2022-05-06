@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MyRoom.unity
     guid: 20b7c739b6a922b49bcebaded391f080
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 384c16608d004cc4492d3d1147ed3ea9, type: 2}
+    com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 60e0732dd42b69f4db1e81941036e1a1, type: 2}
+    xr.sdk.mock-hmd.settings: {fileID: 11400000, guid: 98e8903b1480f1644a58f5855670765a, type: 2}
