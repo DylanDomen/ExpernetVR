@@ -14,9 +14,15 @@ public class SpawnPlayer : MonoBehaviourPunCallbacks
 
         // à faire : vérifier que le joueur est connecté avant d'instancier
         // à faire vérifier que le player est pas null
-        Vector3 randomSpawnPosition = new Vector3(Random.Range(-3, 3), 0, Random.Range(-10, -5));
+        Vector3 randomSpawnPosition = new Vector3(Random.Range(-3, 3), 0.5f, Random.Range(-10, -5));
         PhotonNetwork.Instantiate(player.name, randomSpawnPosition, Quaternion.identity);
     }
+
+    /*private void Awake()
+    {
+        Vector3 randomSpawnPosition = new Vector3(Random.Range(-3, 3), 0.5f, Random.Range(-10, -5));
+        PhotonNetwork.Instantiate(player.name, randomSpawnPosition, Quaternion.identity);
+    }*/
 
     // Update is called once per frame
     void Update()
