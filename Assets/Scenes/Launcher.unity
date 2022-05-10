@@ -2132,6 +2132,7 @@ MonoBehaviour:
   feedbackText: {fileID: 437288780}
   isConnecting: 0
   maxPlayerPerRoom: 10
+  getRoomURL: http://91.121.171.150:8080/rooms
 --- !u!1 &1782349376
 GameObject:
   m_ObjectHideFlags: 0

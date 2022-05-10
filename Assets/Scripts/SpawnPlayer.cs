@@ -4,6 +4,8 @@ using UnityEngine;
 using Photon.Realtime;
 using Photon.Pun;
 using UnityEngine.SceneManagement;
+using UnityEngine.XR.Interaction.Toolkit;
+using Unity.XR.CoreUtils;
 
 public class SpawnPlayer : MonoBehaviourPunCallbacks
 {
@@ -15,7 +17,9 @@ public class SpawnPlayer : MonoBehaviourPunCallbacks
         // à faire : vérifier que le joueur est connecté avant d'instancier
         // à faire vérifier que le player est pas null
         Vector3 randomSpawnPosition = new Vector3(Random.Range(-3, 3), 0.5f, Random.Range(-10, -5));
-        PhotonNetwork.Instantiate(player.name, randomSpawnPosition, Quaternion.identity);
+        GameObject xrorigin = PhotonNetwork.Instantiate(player.name, randomSpawnPosition, Quaternion.identity);
+        xrorigin.name = "XR Origin";
+        GameObject.Find("Locomotion System").GetComponent<LocomotionSystem>().xrOrigin = xrorigin.GetComponent<XROrigin>();
     }
 
     /*private void Awake()

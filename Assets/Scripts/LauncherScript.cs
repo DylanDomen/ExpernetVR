@@ -32,7 +32,7 @@ public class LauncherScript : MonoBehaviourPunCallbacks
         //si il ya plusieurs personne dans la room ?a va synchro la sc?ne du premier joueur avec les autres
         PhotonNetwork.AutomaticallySyncScene = true;
 
-        StartCoroutine(getRooms());
+        //StartCoroutine(getRooms());
     }
 
     public void Connect()
