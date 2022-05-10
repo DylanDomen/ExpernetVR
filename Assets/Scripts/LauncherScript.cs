@@ -6,6 +6,7 @@ using TMPro;
 using Photon.Pun;
 using UnityEngine.Networking;
 using ExpernetVR;
+using Newtonsoft.Json.Linq;
 
 public class LauncherScript : MonoBehaviourPunCallbacks
 {
@@ -13,7 +14,10 @@ public class LauncherScript : MonoBehaviourPunCallbacks
     public TMP_Text feedbackText;
     public bool isConnecting;
     public byte maxPlayerPerRoom = 10;
+    public Canvas connectionCanvas;
+    public Canvas roomsListCanvas;
     public string getRoomURL = "http://91.121.171.150:8080/rooms";
+    public string authenticateURL = "http://91.121.171.150:8080/authenticate";
 
     // Start is called before the first frame update
     void Start()
@@ -37,6 +41,45 @@ public class LauncherScript : MonoBehaviourPunCallbacks
 
     public void Connect()
     {
+        StartCoroutine(sendConnectionRequest());
+    }
+
+    public IEnumerator sendConnectionRequest()
+    {
+        string json = "{\"username\":\"seb\",\"password\": \"seb\"}";
+
+        UnityWebRequest request = new UnityWebRequest(authenticateURL, "POST");
+        byte[] jsonToSend = new System.Text.UTF8Encoding().GetBytes(json);
+        request.uploadHandler = (UploadHandler)new UploadHandlerRaw(jsonToSend);
+        request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
+        request.SetRequestHeader("Content-Type", "application/json");
+
+        yield return request.SendWebRequest();
+
+        if(request.result == UnityWebRequest.Result.ProtocolError || request.result == UnityWebRequest.Result.ConnectionError)
+        {
+            Debug.LogError("Connection error : " + request.error);
+        }
+        else
+        {
+            Debug.Log("Successfully connected");
+
+            var res = request.downloadHandler.text;
+
+            ExpernetVR.AuthenticateResponse response = Newtonsoft.Json.JsonConvert.DeserializeObject<ExpernetVR.AuthenticateResponse>(json);
+
+            App.jwt = response.token;
+
+            connectionCanvas.enabled = false;
+            roomsListCanvas.enabled = true;
+
+            StartCoroutine(getRooms(App.jwt));
+        }
+
+    }
+
+    public void connectToRoom()
+    {
         // we want to make sure the log is clear everytime we connect, we might have several failed attempted if connection failed.
         feedbackText.text = "";
 
@@ -59,6 +102,7 @@ public class LauncherScript : MonoBehaviourPunCallbacks
             // #Critical, we must first and foremost connect to Photon Online Server.
             PhotonNetwork.ConnectUsingSettings();
         }
+
     }
 
     void LogFeedback(string message)
@@ -127,14 +171,15 @@ public class LauncherScript : MonoBehaviourPunCallbacks
         }
     }
 
-    private IEnumerator getRooms()
+    private IEnumerator getRooms(string jwt)
     {
         Debug.Log("Get rooms");
+        Debug.Log(jwt);
         using (UnityWebRequest request = UnityWebRequest.Get(getRoomURL))
         {
             yield return request.SendWebRequest();
 
-            if(request.result == UnityWebRequest.Result.ConnectionError ||  request.result == UnityWebRequest.Result.ConnectionError)
+            if(request.result == UnityWebRequest.Result.ProtocolError || request.result == UnityWebRequest.Result.ConnectionError)
             {
                 Debug.LogError("Get rooms error : " + request.error);
             }
@@ -149,7 +194,6 @@ public class LauncherScript : MonoBehaviourPunCallbacks
                 foreach (ExpernetVR.Room room in rooms)
                 {
                     Debug.Log(room.name);
-
                 }
             }
         }
