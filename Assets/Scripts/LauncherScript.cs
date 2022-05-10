@@ -13,11 +13,14 @@ public class LauncherScript : MonoBehaviourPunCallbacks
     public Button buttonConnection;
     public TMP_Text feedbackText;
     public bool isConnecting;
-    public byte maxPlayerPerRoom = 10;
-    public Canvas connectionCanvas;
-    public Canvas roomsListCanvas;
+    public byte maxPlayerPerRoom = 20;
+    public GameObject connectionCanvas;
+    public GameObject roomsListCanvas;
+    public GameObject roomsListPanel;
+    public Button buttonPrefab;
     public string getRoomURL = "http://91.121.171.150:8080/rooms";
     public string authenticateURL = "http://91.121.171.150:8080/authenticate";
+    private ExpernetVR.Room[] rooms;
 
     // Start is called before the first frame update
     void Start()
@@ -33,16 +36,14 @@ public class LauncherScript : MonoBehaviourPunCallbacks
 
     void Awake()
     {
-        //si il ya plusieurs personne dans la room ?a va synchro la sc?ne du premier joueur avec les autres
-        PhotonNetwork.AutomaticallySyncScene = true;
-
-        //StartCoroutine(getRooms());
+        // #Critical, we must first and foremost connect to Photon Online Server.
+        PhotonNetwork.ConnectUsingSettings();
     }
 
     public void Connect()
     {
-        //StartCoroutine(sendConnectionRequest());
-        connectToRoom();
+        StartCoroutine(sendConnectionRequest());
+        //connectToRoom();
     }
 
     public IEnumerator sendConnectionRequest()
@@ -67,19 +68,17 @@ public class LauncherScript : MonoBehaviourPunCallbacks
 
             var res = request.downloadHandler.text;
 
-            ExpernetVR.AuthenticateResponse response = Newtonsoft.Json.JsonConvert.DeserializeObject<ExpernetVR.AuthenticateResponse>(json);
+            ExpernetVR.AuthenticateResponse response = Newtonsoft.Json.JsonConvert.DeserializeObject<ExpernetVR.AuthenticateResponse>(res);
 
-            App.jwt = response.token;
+            connectionCanvas.SetActive(false);
+            roomsListCanvas.SetActive(true);
 
-            connectionCanvas.enabled = false;
-            roomsListCanvas.enabled = true;
-
-            StartCoroutine(getRooms(App.jwt));
+            StartCoroutine(getRooms(response.token));
         }
 
     }
 
-    public void connectToRoom()
+    public void connectToRoom(string roomName)
     {
         // we want to make sure the log is clear everytime we connect, we might have several failed attempted if connection failed.
         feedbackText.text = "";
@@ -93,17 +92,17 @@ public class LauncherScript : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsConnected)
         {
             LogFeedback("Joining Room...");
-            // #Critical we need at this point to attempt joining a Random Room. If it fails, we'll get notified in OnJoinRandomFailed() and we'll create one.
-            PhotonNetwork.JoinRandomRoom();
-        }
-        else
+            RoomOptions roomOptions = new RoomOptions();
+            roomOptions.IsOpen = true;
+            roomOptions.IsVisible = true;
+            roomOptions.MaxPlayers = maxPlayerPerRoom;
+
+            PhotonNetwork.JoinOrCreateRoom(roomName, roomOptions, null);
+
+        } else
         {
-            LogFeedback("Connecting...");
-
-            // #Critical, we must first and foremost connect to Photon Online Server.
-            PhotonNetwork.ConnectUsingSettings();
+            Debug.LogError("Error not connected to master");
         }
-
     }
 
     void LogFeedback(string message)
@@ -126,22 +125,9 @@ public class LauncherScript : MonoBehaviourPunCallbacks
     {
         if (isConnecting)
         {
-            LogFeedback("OnConnectedToMaster: Next -> try to Join Random Room");
-            Debug.Log("PUN Basics Tutorial/Launcher: OnConnectedToMaster() was called by PUN. Now this client is connected and could join a room.\n Calling: PhotonNetwork.JoinRandomRoom(); Operation will fail if no room found");
-
-            // #Critical: The first we try to do is to join a potential existing room. If there is, good, else, we'll be called back with OnJoinRandomFailed()
-            PhotonNetwork.JoinRandomRoom();
+            LogFeedback("OnConnectedToMaster");
+            Debug.Log("PUN Basics Tutorial/Launcher: OnConnectedToMaster() was called by PUN. Now this client is connected and could join a room.");
         }
-    }
-
-    //si on arrive pas a join une random room
-    public override void OnJoinRandomFailed(short returnCode, string message)
-    {
-        LogFeedback("<Color=Red>OnJoinRandomFailed</Color>: Next -> Create a new Room");
-        Debug.Log("PUN Basics Tutorial/Launcher:OnJoinRandomFailed() was called by PUN. No random room available, so we create one.\nCalling: PhotonNetwork.CreateRoom");
-
-        // #Critical: we failed to join a random room, maybe none exists or they are all full. No worries, we create a new room.
-        PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = this.maxPlayerPerRoom });
     }
 
     
@@ -164,7 +150,7 @@ public class LauncherScript : MonoBehaviourPunCallbacks
         // #Critical: We only load if we are the first player, else we rely on  PhotonNetwork.AutomaticallySyncScene to sync our instance scene.
         if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
         {
-            Debug.Log("We load the 'Room for 1' ");
+            Debug.Log("Room: " + PhotonNetwork.CurrentRoom.Name);
 
             // #Critical
             // Load the Room Level. 
@@ -175,9 +161,10 @@ public class LauncherScript : MonoBehaviourPunCallbacks
     private IEnumerator getRooms(string jwt)
     {
         Debug.Log("Get rooms");
-        Debug.Log(jwt);
+
         using (UnityWebRequest request = UnityWebRequest.Get(getRoomURL))
         {
+            request.SetRequestHeader("Authorization", "Bearer " + jwt);
             yield return request.SendWebRequest();
 
             if(request.result == UnityWebRequest.Result.ProtocolError || request.result == UnityWebRequest.Result.ConnectionError)
@@ -190,11 +177,15 @@ public class LauncherScript : MonoBehaviourPunCallbacks
 
                 var json = request.downloadHandler.text;
 
-                ExpernetVR.Room[] rooms = Newtonsoft.Json.JsonConvert.DeserializeObject<ExpernetVR.Room[]>(json);
+                rooms = Newtonsoft.Json.JsonConvert.DeserializeObject<ExpernetVR.Room[]>(json);
 
                 foreach (ExpernetVR.Room room in rooms)
                 {
-                    Debug.Log(room.name);
+                    var button = Instantiate(buttonPrefab, Vector3.zero, Quaternion.identity);
+                    button.transform.SetParent(roomsListPanel.transform, false);
+                    var text = button.GetComponentInChildren<TextMeshProUGUI>();
+                    text.text = room.name;
+                    button.GetComponent<Button>().onClick.AddListener(delegate { connectToRoom(room.name); });
                 }
             }
         }
