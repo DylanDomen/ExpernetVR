@@ -1,10 +1,11 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Photon.Realtime;
 using UnityEngine.UI;
 using TMPro;
 using Photon.Pun;
+using UnityEngine.Networking;
+using ExpernetVR;
 
 public class LauncherScript : MonoBehaviourPunCallbacks
 {
@@ -12,6 +13,7 @@ public class LauncherScript : MonoBehaviourPunCallbacks
     public TMP_Text feedbackText;
     public bool isConnecting;
     public byte maxPlayerPerRoom = 10;
+    public string getRoomURL = "http://91.121.171.150:8080/rooms";
 
     // Start is called before the first frame update
     void Start()
@@ -27,8 +29,10 @@ public class LauncherScript : MonoBehaviourPunCallbacks
 
     void Awake()
     {
-        //si il ya plusieurs personne dans la room ça va synchro la scène du premier joueur avec les autres
+        //si il ya plusieurs personne dans la room ?a va synchro la sc?ne du premier joueur avec les autres
         PhotonNetwork.AutomaticallySyncScene = true;
+
+        StartCoroutine(getRooms());
     }
 
     public void Connect()
@@ -72,7 +76,7 @@ public class LauncherScript : MonoBehaviourPunCallbacks
     //callback====================================================================================================
 
 
-    //se déclenche lorque la conenction au serveur à été effectué
+    //se d?clenche lorque la conenction au serveur ? ?t? effectu?
     public override void OnConnectedToMaster()
     {
         if (isConnecting)
@@ -96,7 +100,7 @@ public class LauncherScript : MonoBehaviourPunCallbacks
     }
 
     
-    // permet de savoir si un joueur est déco ou à été déco
+    // permet de savoir si un joueur est d?co ou ? ?t? d?co
     
     public override void OnDisconnected(DisconnectCause cause)
     {
@@ -106,7 +110,7 @@ public class LauncherScript : MonoBehaviourPunCallbacks
         buttonConnection.interactable = true;
     }
 
-    //connection à la room c'est bien passé et que le jouer c'est connecté au jeu
+    //connection ? la room c'est bien pass? et que le jouer c'est connect? au jeu
     public override void OnJoinedRoom()
     {
         LogFeedback("<Color=Green>OnJoinedRoom</Color> with " + PhotonNetwork.CurrentRoom.PlayerCount + " Player(s)");
@@ -121,6 +125,35 @@ public class LauncherScript : MonoBehaviourPunCallbacks
             // Load the Room Level. 
             PhotonNetwork.LoadLevel("MyRoom");
         }
+    }
+
+    private IEnumerator getRooms()
+    {
+        Debug.Log("Get rooms");
+        using (UnityWebRequest request = UnityWebRequest.Get(getRoomURL))
+        {
+            yield return request.SendWebRequest();
+
+            if(request.result == UnityWebRequest.Result.ConnectionError ||  request.result == UnityWebRequest.Result.ConnectionError)
+            {
+                Debug.LogError("Get rooms error : " + request.error);
+            }
+            else
+            {
+                Debug.Log("Rooms succesfully retrieved");
+
+                var json = request.downloadHandler.text;
+
+                ExpernetVR.Room[] rooms = Newtonsoft.Json.JsonConvert.DeserializeObject<ExpernetVR.Room[]>(json);
+
+                foreach (ExpernetVR.Room room in rooms)
+                {
+                    Debug.Log(room.name);
+
+                }
+            }
+        }
+
     }
 
     //callback====================================================================================================
