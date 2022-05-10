@@ -41,7 +41,8 @@ public class LauncherScript : MonoBehaviourPunCallbacks
 
     public void Connect()
     {
-        StartCoroutine(sendConnectionRequest());
+        //StartCoroutine(sendConnectionRequest());
+        connectToRoom();
     }
 
     public IEnumerator sendConnectionRequest()
