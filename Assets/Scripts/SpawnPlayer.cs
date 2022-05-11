@@ -14,8 +14,8 @@ public class SpawnPlayer : MonoBehaviourPunCallbacks
     void Start()
     {
 
-        // à faire : vérifier que le joueur est connecté avant d'instancier
-        // à faire vérifier que le player est pas null
+        // ? faire : v?rifier que le joueur est connect? avant d'instancier
+        // ? faire v?rifier que le player est pas null
         Vector3 randomSpawnPosition = new Vector3(Random.Range(-3, 3), 0.5f, Random.Range(-10, -5));
         GameObject xrorigin = PhotonNetwork.Instantiate(player.name, randomSpawnPosition, Quaternion.identity);
         xrorigin.name = "XR Origin";
@@ -44,15 +44,15 @@ public class SpawnPlayer : MonoBehaviourPunCallbacks
 
     //lorsque un joeueur se connecte
 
-    public void OnPlayerEnterRoom(Player other)
+    public override void OnPlayerEnteredRoom(Player other)
     {
-        Debug.Log(other.NickName + " s'est connecté ! ");
+        Debug.Log(other.NickName + " s'est connect? ! ");
     }
 
-    //lorsque un joueur se déconnecte
+    //lorsque un joueur se d?connecte
     public override void OnPlayerLeftRoom(Player other)
     {
-        Debug.Log(other.NickName + " s'est deconnecté ! ");
+        Debug.Log(other.NickName + " s'est deconnect? ! ");
     }
 
     //lorsque un joueur quitte la room

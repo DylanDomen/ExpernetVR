@@ -38,6 +38,7 @@ public class LauncherScript : MonoBehaviourPunCallbacks
     {
         // #Critical, we must first and foremost connect to Photon Online Server.
         PhotonNetwork.ConnectUsingSettings();
+        PhotonNetwork.AutomaticallySyncScene = true;
     }
 
     public void Connect()
