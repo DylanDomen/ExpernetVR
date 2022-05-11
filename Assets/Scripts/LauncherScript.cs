@@ -145,17 +145,20 @@ public class LauncherScript : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         LogFeedback("<Color=Green>OnJoinedRoom</Color> with " + PhotonNetwork.CurrentRoom.PlayerCount + " Player(s)");
-        Debug.Log("PUN Basics Tutorial/Launcher: OnJoinedRoom() called by PUN. Now this client is in a room.\nFrom here on, your game would be running.");
+        Debug.Log("Room joined : " + PhotonNetwork.CurrentRoom.ToString());
 
         // #Critical: We only load if we are the first player, else we rely on  PhotonNetwork.AutomaticallySyncScene to sync our instance scene.
         if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
         {
-            Debug.Log("Room: " + PhotonNetwork.CurrentRoom.Name);
-
             // #Critical
             // Load the Room Level. 
             PhotonNetwork.LoadLevel("MyRoom");
         }
+    }
+
+    public override void OnCreatedRoom()
+    {
+        Debug.Log("Room created: " + PhotonNetwork.CurrentRoom.Name);
     }
 
     private IEnumerator getRooms(string jwt)
