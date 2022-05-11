@@ -21,10 +21,10 @@ public class SpawnPlayer : MonoBehaviourPunCallbacks
         xrorigin.name = "XR Origin";
         GameObject.Find("Locomotion System").GetComponent<LocomotionSystem>().xrOrigin = xrorigin.GetComponent<XROrigin>();
 
-        if (xrorigin.gameObject.GetPhotonView().IsMine == false)
+        /*if (xrorigin.gameObject.GetPhotonView().IsMine == false)
         {
             xrorigin.gameObject.GetComponent<XROrigin>().enabled = false;
-        }
+        }*/
     }
 
     /*private void Awake()
