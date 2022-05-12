@@ -23,15 +23,11 @@ public class SpawnPlayer : MonoBehaviourPunCallbacks
 
         if (xrorigin.gameObject.GetPhotonView().IsMine == false)
         {
+            Debug.Log("test" + xrorigin.GetComponent<PhotonView>().name);
             xrorigin.gameObject.GetComponent<XROrigin>().enabled = false;
+            xrorigin.transform.FindChild("Camera Offset").gameObject.SetActive(false);
         }
     }
-
-    /*private void Awake()
-    {
-        Vector3 randomSpawnPosition = new Vector3(Random.Range(-3, 3), 0.5f, Random.Range(-10, -5));
-        PhotonNetwork.Instantiate(player.name, randomSpawnPosition, Quaternion.identity);
-    }*/
 
     // Update is called once per frame
     void Update()
