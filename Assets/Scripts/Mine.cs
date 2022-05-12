@@ -20,7 +20,7 @@ public class Mine : MonoBehaviour
         {
             Debug.Log("test" + gameObject.GetComponent<PhotonView>().name);
             gameObject.GetComponent<XROrigin>().enabled = false;
-            gameObject.transform.Find("Camera Offset").gameObject.SetActive(false);
+            gameObject.transform.Find("Camera Offset").gameObject.transform.Find("Main Camera").gameObject.SetActive(false);
         }
     }
 }
