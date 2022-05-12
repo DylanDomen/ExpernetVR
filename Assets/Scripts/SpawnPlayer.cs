@@ -10,6 +10,7 @@ using Unity.XR.CoreUtils;
 public class SpawnPlayer : MonoBehaviourPunCallbacks
 {
     public GameObject player;
+    public GameObject xrorigin;
     // Start is called before the first frame update
     void Start()
     {
@@ -17,16 +18,17 @@ public class SpawnPlayer : MonoBehaviourPunCallbacks
         // ? faire : v?rifier que le joueur est connect? avant d'instancier
         // ? faire v?rifier que le player est pas null
         Vector3 randomSpawnPosition = new Vector3(Random.Range(-3, 3), 0.5f, Random.Range(-10, -5));
-        GameObject xrorigin = PhotonNetwork.Instantiate(player.name, randomSpawnPosition, Quaternion.identity);
+        xrorigin = PhotonNetwork.Instantiate(player.name, randomSpawnPosition, Quaternion.identity);
         xrorigin.name = "XR Origin";
         GameObject.Find("Locomotion System").GetComponent<LocomotionSystem>().xrOrigin = xrorigin.GetComponent<XROrigin>();
 
-        if (xrorigin.gameObject.GetPhotonView().IsMine == false)
+        Debug.Log("avant" + xrorigin.gameObject.GetPhotonView().IsMine);
+        /*if (xrorigin.gameObject.GetPhotonView().IsMine == false)
         {
             Debug.Log("test" + xrorigin.GetComponent<PhotonView>().name);
             xrorigin.gameObject.GetComponent<XROrigin>().enabled = false;
-            xrorigin.transform.FindChild("Camera Offset").gameObject.SetActive(false);
-        }
+            xrorigin.transform.Find("Camera Offset").gameObject.SetActive(false);
+        }*/
     }
 
     // Update is called once per frame
