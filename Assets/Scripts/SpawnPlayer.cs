@@ -10,7 +10,8 @@ using Unity.XR.CoreUtils;
 public class SpawnPlayer : MonoBehaviourPunCallbacks
 {
     public GameObject player;
-    public GameObject xrorigin;
+    private GameObject xrorigin;
+    public GameObject sphere;
     // Start is called before the first frame update
     void Start()
     {
@@ -23,12 +24,15 @@ public class SpawnPlayer : MonoBehaviourPunCallbacks
         GameObject.Find("Locomotion System").GetComponent<LocomotionSystem>().xrOrigin = xrorigin.GetComponent<XROrigin>();
 
         Debug.Log("avant" + xrorigin.gameObject.GetPhotonView().IsMine);
-        /*if (xrorigin.gameObject.GetPhotonView().IsMine == false)
+
+        if(PhotonNetwork.IsMasterClient)
         {
-            Debug.Log("test" + xrorigin.GetComponent<PhotonView>().name);
-            xrorigin.gameObject.GetComponent<XROrigin>().enabled = false;
-            xrorigin.transform.Find("Camera Offset").gameObject.SetActive(false);
-        }*/
+            Vector3 randomSpawnPositionSphere1 = new Vector3(Random.Range(-3, 3), 0.5f, Random.Range(-10, -5));
+            Vector3 randomSpawnPositionSphere2 = new Vector3(Random.Range(-3, 3), 0.5f, Random.Range(-10, -5));
+
+            PhotonNetwork.InstantiateRoomObject(sphere.name, randomSpawnPositionSphere1, Quaternion.identity);
+            PhotonNetwork.InstantiateRoomObject(sphere.name, randomSpawnPositionSphere2, Quaternion.identity);
+        }
     }
 
     // Update is called once per frame
