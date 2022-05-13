@@ -4,6 +4,7 @@ using UnityEngine;
 using Photon.Realtime;
 using Photon.Pun;
 using Unity.XR.CoreUtils;
+using UnityEngine.InputSystem.XR;
 
 public class Mine : MonoBehaviour
 {
@@ -20,7 +21,9 @@ public class Mine : MonoBehaviour
         {
             Debug.Log("test" + gameObject.GetComponent<PhotonView>().name);
             gameObject.GetComponent<XROrigin>().enabled = false;
-            gameObject.transform.Find("Camera Offset").gameObject.transform.Find("Main Camera").gameObject.SetActive(false);
+            gameObject.transform.Find("Camera Offset").transform.Find("Main Camera").gameObject.SetActive(false);
+            gameObject.transform.Find("Camera Offset").transform.Find("LeftHand Controller").gameObject.GetComponent<UnityEngine.XR.Interaction.Toolkit.ActionBasedController>().enabled = false;
+            gameObject.transform.Find("Camera Offset").transform.Find("RightHand Controller").gameObject.GetComponent<UnityEngine.XR.Interaction.Toolkit.ActionBasedController>().enabled = false;
         }
     }
 }
