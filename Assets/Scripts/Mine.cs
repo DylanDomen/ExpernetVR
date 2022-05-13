@@ -12,12 +12,6 @@ public class Mine : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
         if (gameObject.GetPhotonView().IsMine == false)
         {
             Debug.Log("test" + gameObject.GetComponent<PhotonView>().name);
@@ -29,6 +23,16 @@ public class Mine : MonoBehaviour
             gameObject.transform.Find("Camera Offset").transform.Find("RightHand Controller").gameObject.GetComponent<XRRayInteractor>().enabled = false;
             gameObject.transform.Find("Camera Offset").transform.Find("LeftHand Controller").gameObject.GetComponent<XRInteractorLineVisual>().enabled = false;
             gameObject.transform.Find("Camera Offset").transform.Find("RightHand Controller").gameObject.GetComponent<XRInteractorLineVisual>().enabled = false;
+        } else
+        {
+            gameObject.transform.Find("CubePlayer").transform.Find("Canvas").gameObject.SetActive(false);
         }
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
     }
 }
