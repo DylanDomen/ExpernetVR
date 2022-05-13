@@ -9,12 +9,10 @@ using ExpernetVR;
 public class PlayerInfo : MonoBehaviourPunCallbacks
 {
     public TMP_Text textUsername;
-    private App gameManager;
     // Start is called before the first frame update
     void Start()
     {
-        gameManager = GameObject.Find("GameManager").gameObject.GetComponent<App>();
-        showPlayerName(gameManager.username);
+        showPlayerName();
     }
 
     // Update is called once per frame
@@ -23,9 +21,8 @@ public class PlayerInfo : MonoBehaviourPunCallbacks
         
     }
 
-    public void showPlayerName(string username)
+    public void showPlayerName()
     {
-        PhotonNetwork.NickName = username;
         textUsername.text = PhotonNetwork.NickName;
     }
 }
