@@ -21,6 +21,8 @@ public class LauncherScript : MonoBehaviourPunCallbacks
     public string getRoomURL = "http://91.121.171.150:8080/rooms";
     public string authenticateURL = "http://91.121.171.150:8080/authenticate";
     private ExpernetVR.Room[] rooms;
+    public GameObject gameManager;
+    private App gameManagerScript;
 
     // Start is called before the first frame update
     void Start()
@@ -39,6 +41,7 @@ public class LauncherScript : MonoBehaviourPunCallbacks
         // #Critical, we must first and foremost connect to Photon Online Server.
         PhotonNetwork.ConnectUsingSettings();
         PhotonNetwork.AutomaticallySyncScene = true;
+        gameManagerScript = gameManager.GetComponent<App>();
     }
 
     public void Connect()
@@ -73,6 +76,9 @@ public class LauncherScript : MonoBehaviourPunCallbacks
 
             connectionCanvas.SetActive(false);
             roomsListCanvas.SetActive(true);
+
+            gameManagerScript.username = response.username;
+            gameManagerScript.jwt = response.token;
 
             StartCoroutine(getRooms(response.token));
         }

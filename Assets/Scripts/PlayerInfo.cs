@@ -4,14 +4,17 @@ using UnityEngine;
 using Photon.Realtime;
 using Photon.Pun;
 using TMPro;
+using ExpernetVR;
 
 public class PlayerInfo : MonoBehaviourPunCallbacks
 {
     public TMP_Text textUsername;
+    private App gameManager;
     // Start is called before the first frame update
     void Start()
     {
-        showPlayerName();
+        gameManager = GameObject.Find("GameManager").gameObject.GetComponent<App>();
+        showPlayerName(gameManager.username);
     }
 
     // Update is called once per frame
@@ -20,9 +23,9 @@ public class PlayerInfo : MonoBehaviourPunCallbacks
         
     }
 
-    public void showPlayerName()
+    public void showPlayerName(string username)
     {
-        PhotonNetwork.NickName = "Player " + this.GetComponent<PhotonView>().ViewID;
+        PhotonNetwork.NickName = username;
         textUsername.text = PhotonNetwork.NickName;
     }
 }

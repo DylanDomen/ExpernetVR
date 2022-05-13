@@ -1,12 +1,17 @@
-﻿using System;
+﻿using UnityEngine;
+
 namespace ExpernetVR
 {
-    public static class App
+    public class App : MonoBehaviour
     {
-        public static string roomName;
-        public static int roomId;
-        public static string jwt;
+        public string roomName;
+        public string jwt;
+        public string username;
 
+        void Awake()
+        {
+            DontDestroyOnLoad(gameObject);
+        }
     }
 }
 
