@@ -12,14 +12,15 @@ public class SpawnPlayer : MonoBehaviourPunCallbacks
     public GameObject player;
     private GameObject xrorigin;
     public GameObject sphere;
+    public GameObject spawnPoint;
     // Start is called before the first frame update
     void Start()
     {
 
         // ? faire : v?rifier que le joueur est connect? avant d'instancier
         // ? faire v?rifier que le player est pas null
-        Vector3 randomSpawnPosition = new Vector3(Random.Range(-3, 3), 0.5f, Random.Range(-10, -5));
-        xrorigin = PhotonNetwork.Instantiate(player.name, randomSpawnPosition, Quaternion.identity);
+        Vector3 spawnPosition = spawnPoint.transform.position;
+        xrorigin = PhotonNetwork.Instantiate(player.name, spawnPosition, Quaternion.identity);
         xrorigin.name = "XR Origin";
         GameObject.Find("Locomotion System").GetComponent<LocomotionSystem>().xrOrigin = xrorigin.GetComponent<XROrigin>();
 

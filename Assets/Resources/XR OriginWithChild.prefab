@@ -846,6 +846,8 @@ GameObject:
   - component: {fileID: 1915264845133923619}
   - component: {fileID: 1915264845133923616}
   - component: {fileID: 3797655109538460317}
+  - component: {fileID: 8570348050285834390}
+  - component: {fileID: 6042434113214962743}
   m_Layer: 0
   m_Name: XR OriginWithChild
   m_TagString: Untagged
@@ -938,6 +940,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b78b5f6957b62f4590d7361ea002599, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!54 &8570348050285834390
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1915264845133923617}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!65 &6042434113214962743
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1915264845133923617}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.35409164, y: 0.75791, z: 0.3594694}
+  m_Center: {x: 0.004876137, y: -0.19165456, z: -0.03278303}
 --- !u!1 &2191991231168332083
 GameObject:
   m_ObjectHideFlags: 0
