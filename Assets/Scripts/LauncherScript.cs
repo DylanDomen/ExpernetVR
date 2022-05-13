@@ -80,8 +80,6 @@ public class LauncherScript : MonoBehaviourPunCallbacks
             gameManagerScript.username = response.username;
             gameManagerScript.jwt = response.token;
 
-            PhotonNetwork.NickName = response.username;
-
             StartCoroutine(getRooms(response.token));
         }
 
@@ -155,6 +153,8 @@ public class LauncherScript : MonoBehaviourPunCallbacks
     {
         LogFeedback("<Color=Green>OnJoinedRoom</Color> with " + PhotonNetwork.CurrentRoom.PlayerCount + " Player(s)");
         Debug.Log("Room joined : " + PhotonNetwork.CurrentRoom.ToString());
+
+        PhotonNetwork.NickName = gameManagerScript.username;
 
         // #Critical: We only load if we are the first player, else we rely on  PhotonNetwork.AutomaticallySyncScene to sync our instance scene.
         if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
