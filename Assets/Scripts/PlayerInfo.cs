@@ -12,7 +12,6 @@ public class PlayerInfo : MonoBehaviourPunCallbacks
     // Start is called before the first frame update
     void Start()
     {
-        showPlayerName();
     }
 
     // Update is called once per frame
@@ -21,8 +20,16 @@ public class PlayerInfo : MonoBehaviourPunCallbacks
         
     }
 
-    public void showPlayerName()
+    public override void OnPlayerEnteredRoom(Player other)
     {
-        textUsername.text = PhotonNetwork.NickName;
+        Debug.Log(other.NickName + " s'est connect? ! ");
+        if(other == PhotonNetwork.LocalPlayer)
+        {
+            textUsername.text = PhotonNetwork.NickName;
+        } else
+        {
+            textUsername.text = other.NickName;
+        }
+        
     }
 }
